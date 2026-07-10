@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+asyncpg://gestor:gestor@localhost:5432/gestor_financeiro"
     anthropic_api_key: str = ""
+    anthropic_model: str = "claude-sonnet-4-20250514"
     app_env: str = "development"
     log_level: str = "INFO"
 
