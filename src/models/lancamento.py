@@ -31,4 +31,4 @@ class Lancamento(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Lancamento id={self.id} data={self.data} descricao={self.descricao!r} valor={self.valor}>"
+        return f"<Lancamento id={self.id} data={self.data} valor={self.valor}>"

@@ -12,7 +12,9 @@ class Subcategoria(Base):
     """Subcategoria de uma categoria (ex: ALIMENTACAO -> Delivery)."""
 
     __tablename__ = "subcategorias"
-    __table_args__ = (UniqueConstraint("categoria_id", "nome", name="uq_subcategoria_categoria_nome"),)
+    __table_args__ = (
+        UniqueConstraint("categoria_id", "nome", name="uq_subcategoria_categoria_nome"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     categoria_id: Mapped[int] = mapped_column(
