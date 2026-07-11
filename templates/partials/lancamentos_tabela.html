@@ -1,0 +1,5 @@
+{% if lancamentos %}
+  {% for l in lancamentos %}{% include "partials/lancamento_linha.html" %}{% endfor %}
+{% else %}
+  <tr><td colspan="9"><div class="empty">Nenhum lançamento encontrado.</div></td></tr>
+{% endif %}

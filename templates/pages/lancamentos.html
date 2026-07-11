@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Lançamentos · Gestor Financeiro{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+  <div>
+    <h1 class="page-title">Lançamentos</h1>
+    <p class="page-sub">Gerencie e categorize seus lançamentos</p>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="btn btn-secondary btn-sm" onclick="abrirModalNovo()">
+      <i data-lucide="plus" style="width:13px;height:13px"></i> Novo
+    </button>
+    <button class="btn btn-sm" id="btn-confirmar-sel" style="display:none;background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe" onclick="confirmarSelecionados()">
+      <i data-lucide="check" style="width:13px;height:13px"></i> Confirmar (<span id="count-conf">0</span>)
+    </button>
+    <button class="btn-danger" id="btn-excluir-sel" style="display:none" onclick="excluirSelecionados()">
+      <i data-lucide="trash-2" style="width:13px;height:13px"></i> Excluir (<span id="count-sel">0</span>)
+    </button>
+  </div>
+</div>
+
+<div class="card" style="padding:1.25rem">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:1rem;justify-content:space-between">
+    <div class="filtros" style="margin:0" data-grupo="origem">
+      <span class="filtros-label">Origem:</span>
+      <button class="filtro ativo" onclick="setFiltroLanc('origem','todos',this)">Todos</button>
+      <button class="filtro" onclick="setFiltroLanc('origem','historico',this)">Histórico</button>
+      <button class="filtro" onclick="setFiltroLanc('origem','alta',this)">IA alta</button>
+      <button class="filtro" onclick="setFiltroLanc('origem','media',this)">IA média</button>
+      <button class="filtro" onclick="setFiltroLanc('origem','baixa',this)">IA baixa</button>
+    </div>
+    <div class="search-wrap">
+      <i data-lucide="search"></i>
+      <input type="text" class="search-input" id="busca" placeholder="Buscar descrição, categoria ou valor..."
+        oninput="onBusca(this.value)">
+    </div>
+  </div>
+
+  <div class="filtros" style="margin-bottom:1rem" data-grupo="fonte">
+    <span class="filtros-label">Fonte:</span>
+    <button class="filtro ativo" onclick="setFiltroLanc('fonte','todos',this)">Todos</button>
+    <button class="filtro" onclick="setFiltroLanc('fonte','fatura',this)">Fatura</button>
+    <button class="filtro" onclick="setFiltroLanc('fonte','extrato',this)">Extrato</button>
+    <button class="filtro" onclick="setFiltroLanc('fonte','manual',this)">Manual</button>
+  </div>
+
+  <div class="filtros" style="margin-bottom:1rem" data-grupo="mes">
+    <span class="filtros-label">Mês:</span>
+    <button class="filtro ativo" onclick="setFiltroLanc('mes','todos',this)">Todos</button>
+    {% for mes in meses %}
+      <button class="filtro" onclick="setFiltroLanc('mes','{{ mes }}',this)">{{ mes|mes_label }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr>
+        <th style="width:32px"><input type="checkbox" id="sel-todos" onchange="selecionarTodos(this.checked)" style="cursor:pointer"></th>
+        <th style="cursor:pointer;user-select:none" onclick="setOrdemCol('data')">Data <span id="ord-data">↓</span></th>
+        <th>Lançamento</th>
+        <th style="cursor:pointer;user-select:none" onclick="setOrdemCol('categoria')">Categoria <span id="ord-categoria" style="color:var(--hint)">↕</span></th>
+        <th style="text-align:right;color:#0284c7;cursor:pointer;user-select:none" onclick="setOrdemCol('valor')">Entrada <span id="ord-valor" style="color:var(--hint)">↕</span></th>
+        <th style="text-align:right;color:#dc2626">Saída</th>
+        <th>Fonte</th>
+        <th>Origem</th>
+        <th></th>
+      </tr></thead>
+      <tbody id="tbody-lancamentos">
+        {% include "partials/lancamentos_tabela.html" %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include "partials/modal_novo.html" %}
+
+<script id="cat-options" type="application/json">{{ cat_opcoes|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/autocomplete.js"></script>
+<script src="/static/js/lancamentos.js"></script>
+{% endblock %}

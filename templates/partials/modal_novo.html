@@ -1,0 +1,49 @@
+<div class="modal-overlay" id="modal-novo" onclick="if(event.target===this)fecharModalNovo()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Novo lançamento</div>
+      <button class="modal-close" onclick="fecharModalNovo()">
+        <i data-lucide="x" style="width:18px;height:18px"></i>
+      </button>
+    </div>
+    <div id="msg-novo" class="msg" style="display:none"></div>
+    <form id="form-novo"
+      hx-post="/lancamentos/novo" hx-target="#tbody-lancamentos" hx-swap="innerHTML"
+      style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <label class="field-label">Data</label>
+        <input type="date" name="data" id="novo-data" class="field-input" required>
+      </div>
+      <div>
+        <label class="field-label">Descrição</label>
+        <input type="text" name="descricao" id="novo-desc" placeholder="Ex: MERCADO EXTRA" class="field-input" required>
+      </div>
+      <div>
+        <label class="field-label">Valor (R$)</label>
+        <input type="number" name="valor" id="novo-valor" placeholder="0.00" step="0.01" min="0" class="field-input" required>
+      </div>
+      <div>
+        <label class="field-label">Tipo</label>
+        <select name="tipo_valor" id="novo-tipo" class="field-input">
+          <option value="saida">Saída (despesa)</option>
+          <option value="entrada">Entrada (receita)</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Categoria / Subcategoria</label>
+        <div class="ac-wrap" style="min-width:100%">
+          <input class="ac-input" id="novo-cat" data-ctx="novo" placeholder="Digite para buscar..." autocomplete="off"
+            oninput="acFiltrar(this)" onfocus="acFiltrar(this)" onblur="acFechar(this)" onkeydown="acNav(event,this)"
+            style="border-radius:10px;padding:9px 12px">
+          <input type="hidden" name="categoria" id="novo-cat-hidden" value="NAO LEMBRO">
+          <input type="hidden" name="subcategoria" id="novo-sub-hidden" value="">
+          <div class="ac-dropdown"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:0.5rem">
+        <button type="submit" class="btn btn-primary" style="flex:1">Salvar</button>
+        <button type="button" class="btn btn-secondary" onclick="fecharModalNovo()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

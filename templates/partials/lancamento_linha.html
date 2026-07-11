@@ -1,0 +1,58 @@
+{% import "partials/_macros.html" as m %}
+{% set label = (l.categoria ~ ' : ' ~ l.subcategoria) if l.subcategoria else l.categoria %}
+<tr id="row-{{ l.id }}" class="{{ 'nao-revisado' if not l.confirmado }}">
+  <td><input type="checkbox" class="row-check" data-id="{{ l.id }}" onchange="onSelecao()" style="cursor:pointer"></td>
+  <td style="white-space:nowrap">
+    <input type="text" class="data-input" value="{{ l.data|data_br }}" name="data"
+      hx-post="/lancamentos/inline-update/{{ l.id }}" hx-trigger="change"
+      hx-target="#row-{{ l.id }}" hx-swap="outerHTML"
+      onfocus="this.select()" onkeydown="if(event.key==='Enter'){this.blur()}">
+  </td>
+  <td style="font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500" title="{{ l.descricao }}">{{ l.descricao }}</td>
+  <td style="min-width:320px;max-width:380px">
+    <div style="display:flex;align-items:center;gap:6px">
+      {{ m.icone_categoria(l.categoria) }}
+      <div class="ac-wrap" style="min-width:270px">
+        <input class="ac-input" value="{{ label }}" autocomplete="off" data-id="{{ l.id }}" data-ctx="row"
+          oninput="acFiltrar(this)" onfocus="acFiltrar(this)" onblur="acFechar(this)" onkeydown="acNav(event,this)">
+        <div class="ac-dropdown"></div>
+      </div>
+    </div>
+  </td>
+  <td style="text-align:right">
+    {% if l.tipo_valor == 'entrada' %}
+      <input class="val-input" value="{{ l.valor|brl }}" name="valor" style="color:#0284c7"
+        hx-post="/lancamentos/inline-update/{{ l.id }}" hx-trigger="change"
+        hx-target="#row-{{ l.id }}" hx-swap="outerHTML"
+        onfocus="this.select();this.style.borderBottomColor='#0284c7'"
+        onkeydown="if(event.key==='Enter'){this.blur()}">
+    {% else %}<span style="color:var(--hint);font-size:12px">—</span>{% endif %}
+  </td>
+  <td style="text-align:right">
+    {% if l.tipo_valor == 'saida' %}
+      <input class="val-input" value="{{ l.valor|brl }}" name="valor" style="color:#dc2626"
+        hx-post="/lancamentos/inline-update/{{ l.id }}" hx-trigger="change"
+        hx-target="#row-{{ l.id }}" hx-swap="outerHTML"
+        onfocus="this.select();this.style.borderBottomColor='#dc2626'"
+        onkeydown="if(event.key==='Enter'){this.blur()}">
+    {% else %}<span style="color:var(--hint);font-size:12px">—</span>{% endif %}
+  </td>
+  <td>{{ m.badge_fonte(l) }}</td>
+  <td>{{ m.badge_origem(l) }}</td>
+  <td>
+    <div style="display:flex;gap:6px;align-items:center">
+      {% if not l.confirmado %}
+        <button class="confirm-btn"
+          hx-post="/lancamentos/inline-update/{{ l.id }}" hx-vals='{"confirmado":"true"}'
+          hx-target="#row-{{ l.id }}" hx-swap="outerHTML">salvar</button>
+      {% else %}
+        <span class="save-ok">✓</span>
+      {% endif %}
+      <button class="del-btn" title="Excluir"
+        hx-delete="/api/lancamentos/{{ l.id }}" hx-target="#row-{{ l.id }}" hx-swap="delete"
+        hx-confirm="Excluir este lançamento?">
+        <i data-lucide="trash-2" style="width:15px;height:15px"></i>
+      </button>
+    </div>
+  </td>
+</tr>
