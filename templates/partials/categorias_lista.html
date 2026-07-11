@@ -1,0 +1,56 @@
+{% import "partials/_macros.html" as m %}
+{% macro bloco(c) %}
+  <div class="cat-bloco">
+    <div class="cat-row cat-row-head" onclick="toggleCat({{ c.id }})">
+      {{ m.icone_categoria(c.nome, c.tipo, 15) }}
+      <span class="cat-name">{{ c.nome }}</span>
+      <span class="cat-count">{{ c.subcategorias|length }} sub</span>
+      <button class="icon-btn" title="Renomear"
+        onclick="event.stopPropagation();renomearCat({{ c.id }}, '{{ c.nome|e }}')">
+        <i data-lucide="pencil" style="width:14px;height:14px"></i>
+      </button>
+      <button class="icon-btn danger" title="Excluir"
+        hx-post="/categorias/{{ c.id }}/excluir" hx-target="#cat-lista" hx-swap="outerHTML"
+        hx-confirm="Excluir a categoria {{ c.nome }}?"
+        onclick="event.stopPropagation()">
+        <i data-lucide="trash-2" style="width:14px;height:14px"></i>
+      </button>
+    </div>
+    <div class="cat-subs" id="subs-{{ c.id }}" style="display:none">
+      {% for s in c.subcategorias %}
+        <div class="sub-row">
+          <i data-lucide="corner-down-right" style="width:13px;height:13px;color:var(--hint)"></i>
+          <span>{{ s.nome }}</span>
+          <button class="icon-btn" style="margin-left:auto" title="Renomear"
+            onclick="renomearSub({{ s.id }}, '{{ s.nome|e }}')">
+            <i data-lucide="pencil" style="width:13px;height:13px"></i>
+          </button>
+          <button class="icon-btn danger" title="Excluir"
+            hx-post="/subcategorias/{{ s.id }}/excluir" hx-target="#cat-lista" hx-swap="outerHTML"
+            hx-confirm="Excluir a subcategoria {{ s.nome }}?">
+            <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+      {% endfor %}
+      <form class="sub-row" style="padding-left:44px;gap:6px"
+        hx-post="/categorias/{{ c.id }}/subcategorias/criar" hx-target="#cat-lista" hx-swap="outerHTML">
+        <input class="ac-input" name="nome" placeholder="Nova subcategoria..." required style="max-width:200px">
+        <button class="btn btn-secondary btn-sm" type="submit">Adicionar</button>
+      </form>
+    </div>
+  </div>
+{% endmacro %}
+
+<div id="cat-lista">
+  {% if erro %}<div class="msg msg-err">{{ erro }}</div>{% endif %}
+  <div class="cat-grid">
+    <div>
+      <div class="card-title" style="margin-bottom:12px">Despesas</div>
+      {% for c in despesas %}{{ bloco(c) }}{% endfor %}
+    </div>
+    <div>
+      <div class="card-title" style="margin-bottom:12px">Receitas</div>
+      {% for c in receitas %}{{ bloco(c) }}{% endfor %}
+    </div>
+  </div>
+</div>
