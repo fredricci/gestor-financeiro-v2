@@ -1,0 +1,28 @@
+{% macro icone_categoria(nome, tipo=None, size=14) %}
+  {% set c = cat_cores(nome, tipo) %}
+  <div class="cat-icon" style="background:{{ c.bg }}">
+    <i data-lucide="{{ cat_icon(nome) }}" style="width:{{ size }}px;height:{{ size }}px;color:{{ c.cor }};stroke-width:2.5"></i>
+  </div>
+{% endmacro %}
+
+{% macro badge_origem(l) %}
+  {% if l.origem in ('regra_usuario', 'confirmado') %}
+    <span class="badge badge-historico">histórico</span>
+  {% elif l.confianca == 'alta' %}
+    <span class="badge badge-alta">IA alta</span>
+  {% elif l.confianca == 'media' %}
+    <span class="badge badge-media">IA média</span>
+  {% else %}
+    <span class="badge badge-baixa">IA baixa</span>
+  {% endif %}
+{% endmacro %}
+
+{% macro badge_fonte(l) %}
+  {% if l.fonte == 'extrato' %}
+    <span class="badge badge-extrato">extrato</span>
+  {% elif l.fonte == 'manual' %}
+    <span class="badge badge-manual">manual</span>
+  {% else %}
+    <span class="badge badge-fatura">fatura</span>
+  {% endif %}
+{% endmacro %}

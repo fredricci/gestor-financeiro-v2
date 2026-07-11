@@ -1,0 +1,18 @@
+<div class="metrics" id="metrics">
+  <div class="metric">
+    <div class="metric-label">Total lançamentos</div>
+    <div class="metric-value" style="color:var(--text)">{{ metricas.total }}</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Do histórico</div>
+    <div class="metric-value" style="color:var(--azul)">{{ metricas.historico }}</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Pela IA</div>
+    <div class="metric-value" style="color:#7c3aed">{{ metricas.ia }}</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Total saídas</div>
+    <div class="metric-value" style="color:var(--danger);font-size:1.1rem">R$ {{ metricas.total_saidas|brl }}</div>
+  </div>
+</div>
