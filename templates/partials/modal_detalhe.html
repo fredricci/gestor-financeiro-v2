@@ -1,0 +1,52 @@
+{% import "partials/_macros.html" as m %}
+<div class="modal-overlay open" id="modal-detalhe" onclick="if(event.target===this)fecharDetalhe()">
+  <div class="modal" style="max-height:80vh;display:flex;flex-direction:column">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">{{ titulo }}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">{{ subtitulo }}</div>
+      </div>
+      <button class="modal-close" onclick="fecharDetalhe()">
+        <i data-lucide="x" style="width:18px;height:18px"></i>
+      </button>
+    </div>
+    <div style="overflow-y:auto;flex:1">
+      <table class="tbl">
+        <thead><tr><th>Data</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead>
+        <tbody>
+          {% if saidas %}
+            <tr><td colspan="3" style="font-size:11px;font-weight:600;color:var(--danger);padding:8px 12px 4px;text-transform:uppercase;letter-spacing:0.05em">Saídas</td></tr>
+            {% for l in saidas %}
+              <tr>
+                <td style="color:var(--muted);font-size:12px;white-space:nowrap">{{ l.data|data_br }}</td>
+                <td style="font-size:13px">{{ l.descricao }}</td>
+                <td style="text-align:right;font-weight:600;font-size:13px;color:var(--danger)">R$ {{ l.valor|brl }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+          {% if entradas %}
+            <tr><td colspan="3" style="font-size:11px;font-weight:600;color:var(--success);padding:8px 12px 4px;text-transform:uppercase;letter-spacing:0.05em">Entradas</td></tr>
+            {% for l in entradas %}
+              <tr>
+                <td style="color:var(--muted);font-size:12px;white-space:nowrap">{{ l.data|data_br }}</td>
+                <td style="font-size:13px">{{ l.descricao }}</td>
+                <td style="text-align:right;font-weight:600;font-size:13px;color:var(--success)">R$ {{ l.valor|brl }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:var(--muted)">{{ count }} lançamento(s)</span>
+      <span style="font-size:13px;font-weight:600">
+        {% if entradas %}
+          Saídas: R$ {{ total_saidas|brl }} | Entradas: R$ {{ total_entradas|brl }} | <strong>Líquido: R$ {{ liquido|brl }}</strong>
+        {% else %}
+          Total: R$ {{ total_saidas|brl }}
+        {% endif %}
+      </span>
+    </div>
+  </div>
+</div>
+<script>window.fecharDetalhe = function(){ document.getElementById('modal-detalhe-container').innerHTML=''; };</script>

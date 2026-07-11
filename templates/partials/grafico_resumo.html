@@ -1,0 +1,65 @@
+{% import "partials/_macros.html" as m %}
+{% set meses = relatorio.meses %}
+<div style="overflow-x:auto">
+  <table class="tbl">
+    <thead><tr>
+      <th>Categoria / Subcategoria</th>
+      {% for mes in meses %}<th style="text-align:right">{{ mes|mes_label }}</th>{% endfor %}
+      <th style="text-align:right">Total</th>
+    </tr></thead>
+    <tbody>
+      {% for linha in relatorio.linhas %}
+        <tr style="background:#fafafa">
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="cat-icon" style="background:{{ linha.bg }}">
+                <i data-lucide="{{ linha.icon }}" style="width:13px;height:13px;color:{{ linha.cor }};stroke-width:2.5"></i>
+              </div>
+              <span style="font-weight:600;font-size:13px;color:{{ linha.cor }}">{{ linha.categoria }}</span>
+            </div>
+          </td>
+          {% for col in linha.cols %}
+            {% if col %}
+              <td class="clicavel" style="text-align:right;font-weight:600;color:{{ col.cor }}"
+                hx-get="/grafico/detalhe?categoria={{ linha.categoria|urlencode }}&mes={{ meses[loop.index0] }}"
+                hx-target="#modal-detalhe-container" hx-swap="innerHTML">R$ {{ col.valor|brl }}</td>
+            {% else %}
+              <td style="text-align:right;color:var(--hint)">—</td>
+            {% endif %}
+          {% endfor %}
+          <td class="clicavel" style="text-align:right;font-weight:700;color:{{ linha.total.cor }}"
+            hx-get="/grafico/detalhe?categoria={{ linha.categoria|urlencode }}&mes=todos"
+            hx-target="#modal-detalhe-container" hx-swap="innerHTML">R$ {{ linha.total.valor|brl }}</td>
+        </tr>
+        {% for sub in linha.subs %}
+          <tr>
+            <td style="padding-left:44px;color:var(--muted);font-size:12px">{{ sub.nome }}</td>
+            {% for col in sub.cols %}
+              {% if col %}
+                <td class="clicavel" style="text-align:right;font-size:12px;color:{{ col.cor }}"
+                  hx-get="/grafico/detalhe?categoria={{ linha.categoria|urlencode }}&subcategoria={{ sub.nome|urlencode }}&mes={{ meses[loop.index0] }}"
+                  hx-target="#modal-detalhe-container" hx-swap="innerHTML">R$ {{ col.valor|brl }}</td>
+              {% else %}
+                <td style="text-align:right;color:var(--hint)">—</td>
+              {% endif %}
+            {% endfor %}
+            <td class="clicavel" style="text-align:right;font-size:12px;color:{{ sub.total.cor }}"
+              hx-get="/grafico/detalhe?categoria={{ linha.categoria|urlencode }}&subcategoria={{ sub.nome|urlencode }}&mes=todos"
+              hx-target="#modal-detalhe-container" hx-swap="innerHTML">R$ {{ sub.total.valor|brl }}</td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+
+      <tr style="border-top:2px solid var(--border)">
+        <td style="font-weight:700;color:var(--danger)">Total Saídas</td>
+        {% for v in relatorio.totais.saidas_mes %}<td style="text-align:right;font-weight:700;color:var(--danger)">R$ {{ v|brl }}</td>{% endfor %}
+        <td style="text-align:right;font-weight:700;color:var(--danger)">R$ {{ relatorio.totais.saidas_geral|brl }}</td>
+      </tr>
+      <tr>
+        <td style="font-weight:700;color:var(--success)">Total Entradas</td>
+        {% for v in relatorio.totais.entradas_mes %}<td style="text-align:right;font-weight:700;color:var(--success)">R$ {{ v|brl }}</td>{% endfor %}
+        <td style="text-align:right;font-weight:700;color:var(--success)">R$ {{ relatorio.totais.entradas_geral|brl }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

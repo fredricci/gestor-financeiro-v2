@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Relatórios · Gestor Financeiro{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:1.5rem">
+  <h1 class="page-title">Relatórios</h1>
+  <p class="page-sub">Visão geral dos seus gastos por categoria</p>
+</div>
+
+{% if relatorio.vazio %}
+  <div class="card"><div class="empty">Nenhum lançamento carregado ainda.</div></div>
+{% else %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.25rem">
+    {% for s in relatorio.saldo_por_mes %}
+      <div class="metric">
+        <div class="metric-label">{{ s.mes|mes_label }}</div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="color:var(--muted)">Entradas</span>
+          <span style="color:var(--success);font-weight:600">R$ {{ s.entradas|brl }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px">
+          <span style="color:var(--muted)">Saídas</span>
+          <span style="color:var(--danger);font-weight:600">R$ {{ s.saidas|brl }}</span>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;justify-content:space-between">
+          <span style="font-size:12px;font-weight:600">Saldo</span>
+          <span style="font-size:13px;font-weight:700;color:{{ 'var(--success)' if s.saldo >= 0 else 'var(--danger)' }}">R$ {{ s.saldo|brl }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="card-title">Gastos mensais por categoria</span></div>
+    <div class="grafico-wrap"><canvas id="grafico"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="card-title">Resumo por categoria</span></div>
+    {% include "partials/grafico_resumo.html" %}
+  </div>
+
+  <div id="modal-detalhe-container"></div>
+  <script id="chart-data" type="application/json">{{ relatorio.chart|tojson }}</script>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/grafico.js"></script>
+{% endblock %}
